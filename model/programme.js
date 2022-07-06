@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+const localisation = require('./localisation');
 
 var Schema = mongoose.Schema;
 
@@ -11,17 +12,17 @@ var Programme= new Schema({
     dateFermeture: Date,		
     regle: String,		
     image: String,		
-    isActive: Boolean,
-
+    
     especeAnimales: [{
             type: Schema.Types.ObjectId,
             ref: "especeAnimales"
     }],
+    isActive:{
+        type: Boolean,
+        default: true,
+    },
 
-    localisation: {
-            type: Schema.Types.ObjectId,
-            ref: "localisation"
-    }
+    geolocation: localisation,
 
 });
 
