@@ -10,18 +10,12 @@ var Commentaire= new Schema({
     message: String,	
     isActive: Boolean,
     note : String, 
+
     produit: {
 
       type: Schema.Types.ObjectId,
       ref: "produit"  
     },
-    membre: {
-
-      type: Schema.Types.ObjectId,
-      ref: "membre"  
-    }
-
-
 
 });
 

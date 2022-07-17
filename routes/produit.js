@@ -1,9 +1,17 @@
 var express = require('express');
 var produit = require('../model/produit');
 var CategoryProduct = require('../model/categorieProduit');
+
+const ejs=require("ejs");
+const path=require("path");
+const app_qr =express();
+const bp=require('body-parser');
+const qrcode=require('qrcode');
+
 var router = express.Router();
 
 const multer = require("multer");
+const app = require('../app');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -13,7 +21,7 @@ const storage = multer.diskStorage({
         const newFileName = Date.now() + "_" + file.originalname;
         cb(null, newFileName);
     }
-});
+}); 
 
 const upload = multer({ storage });
 
@@ -45,33 +53,27 @@ router.get('/get/:id', async(req, res) =>{
 //    next();
 //}
 /* POST  product . */
-router.post('/addProduct',async(req,res)=>
+router.post('/addProduct',upload.single('image'),async(req,res)=>
 {   
+    
+    console.log("req.body.image>>>>>>>>>>>>>"+req.file.filename);
     //const { id } = req.params;
     var id = req.headers['id']; 
-    console.log("host>>>>>>", id)
-    //categoryProduct=await CategoryProduct.findById(id);
-    //console.log(">>>>>>>>> categoryProduct",await CategoryProduct.findById(id));
-
-    //const { id } = req.headers;
-    console.log(">>>>>> id : "+id);
     const categoryProduct = await CategoryProduct.findById(id);
-    console.log("category>>><"+categoryProduct);
     var f= new produit({
         nomProd: req.body.nomProd,			
-        //image : req.file.filename,
         prix: req.body.prix,		
+        image:req.file.filename,
         description: req.body.description,	
         quantiteProd: req.body.quantiteProd,
         categorieProduit : categoryProduct,
         isActive: req.body.isActive
       });
-      //f.categorieProduit=categoryProduct;
+      //f.image= req.body.filename;
+      //var f2= new produit({...req.body });
       f.save();
-     // res.send("Ajout effectué avec succes")
       res.send(f);
       console.log("produit ajouté avec succes ");
-      console.log("<<<<<<<<<<<<<<<<>>>>>>>>>>>");
       console.log(f);
 
 });
@@ -105,6 +107,17 @@ router.post('/add/:id',async(req,res)=>
   console.log(f);
 });
 
+router.put('/update/:_id', async(req, res) =>{
+  
+    console.log(req.params);
+    let data = await produit.updateOne(
+      req.params, 
+      {$set:req.body}
+    );
+    res.send(data);
+  
+    });
+
 router.delete('/delete/:id', async(req, res) =>{
     const { id } = req.params;
     await produit.findByIdAndDelete(id);
@@ -112,6 +125,26 @@ router.delete('/delete/:id', async(req, res) =>{
     //res.redirect("/produit")
     res.send("Suppression effectué avec succes")
 });
+///////////////////////////////////////////////GENERATION QR CODE
+app_qr.use(express.json());
+app_qr.set('view engine','ejs');
+app_qr.use(express.urlencoded({extended:false}));
+app_qr.use(bp.json());
+/* Generate qrcode. */
+router.get('/GenerateQrCode', (req, res, next) =>{
+   // res.send('hello');
+   res.render('qrCode.ejs');
+  });
+  router.post('/scan', (req, res, next) =>{
+    const input_text=req.body.text;
+    //console.log(input_text);
+    qrcode.toDataURL(input_text,(err, src)=>{
+        res.render('scan.ejs', {
+            qr_code:src
+        }); 
+    })
+    //res.render('qrCode.ejs');
+   });
 
-  
+
 module.exports = router;

@@ -15,20 +15,7 @@ var Produit= new Schema({
 
       type: mongoose.Types.ObjectId,
       ref: "categorieProduit"  
-    },
-
-//    commentaire: {
-
-//      type: Schema.Types.ObjectId,
-//     ref: "commentaire"  
-//    },
-
-    panier: [{
-
-      type: Schema.Types.ObjectId,
-      ref: "panier"  
-    }]
-
+    }
 
 },
 {
