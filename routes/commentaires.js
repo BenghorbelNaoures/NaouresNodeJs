@@ -26,26 +26,33 @@ router.get('/', function(req, res) {
   }); 
    
   //get one comment by id
-  router.get('/get/:id', async(req, res) =>{
+router.get('/get/:id', async(req, res) =>{
     const { id } = req.params;
     res.json( await commentaire.findById(id));
+});         
+  //get one comment by id
+  router.get('/getCommentsByProductId/:id', async(req, res) =>{
+    var id =req.params['id']; 
+   // const produit = await Produit.findById(id);
+
+    res.json( await commentaire.find({produit:req.params.id}));
 });
 
-
 /* PSOT  comment  . */
-router.post('/add',upload.single('image'),async(req,res)=>
+router.post('/add/:id',upload.single('image'),async(req,res)=>
 {
-    var id = req.headers['id']; 
+    var id =req.params['id']; 
     const produit = await Produit.findById(id);
     var f= new commentaire({
     description: req.body.description,	
-    image: req.file.filename,			
-    message: req.body.message,	
-    isActive: req.body.isActive,
+    user: req.body.user,
+//    image: req.file.filename,			
+//    message: req.body.message,	
+//    isActive: req.body.isActive,
     note : req.body.note,
     produit:produit
   });
-  f.save();
+  f.save();                 
   res.send(f)
   console.log("commentaire  ajouté avec succes ");
   console.log(f);
@@ -58,7 +65,7 @@ router.put('/update/:_id', async(req, res) =>{
       {$set:req.body}
     );
     res.send(data);
-  
+
     });
 
 router.delete('/delete/:id', async(req, res) =>{
@@ -69,4 +76,4 @@ router.delete('/delete/:id', async(req, res) =>{
     res.send("Suppression effectué avec succes")
 });
 
-module.exports = router;
+module.exports = router;                        

@@ -38,36 +38,70 @@ router.get('/get/:id', async(req, res) =>{
     res.json( await produit.findById(id));
 });
 
-//verifyCategoryIdentity: async (req, res, next) => {
-//    const { id } = req.headers;
-//    if (!id) {
-//        return res.status(401).json();
-//    }
+//modif 24/07/2022
+router.post('/ajoutProduit', upload.single('image'),async(req,res)=>{
+    //var id = req.params['id']; 
+    //const categoryProduct = await CategoryProduct.findById(id);
+    //const { nomProd }=req.body;
+    //const image='http://localhost:3000/uploads/'+req.file.filename;
+    var f= new produit({            
+        nomProd: req.body.nomProd,			
+        prix: req.body.prix,	    	    
+        image:'http://localhost:3000/uploads/'+req.file.filename,
+        description: req.body.description,	    
+        quantiteProd: req.body.quantiteProd,
+        //categorieProduit : categoryProduct,    
+        categorieProduit : req.body.categorieProduit,         
+        isActive: true              
+      });                                                  
+      f.save();
+      res.send(f);
+      console.log("produit ajouté avec succes ");
+      console.log(f);       
 
-//    const categoryProduct = await CategoryProduct.findById(id);
-//    if (!categoryProduct) {
-//        return res.status(404).json();
-//    }
+});
 
-//    req.categoryProduct = categoryProduct;
-//    next();
-//}
+router.post('/ajouProduit/:id', upload.single('image'),async(req,res)=>{
+    var id = req.params['id']; 
+    const categoryProduct = await CategoryProduct.findById(id);
+    //const { nomProd }=req.body;
+    //const image='http://localhost:3000/uploads/'+req.file.filename;
+    var f= new produit({            
+        nomProd: req.body.nomProd,			
+        prix: req.body.prix,	    	    
+        image:'http://localhost:3000/uploads/'+req.file.filename,
+        description: req.body.description,	    
+        quantiteProd: req.body.quantiteProd,
+        //categorieProduit : categoryProduct,    
+        categorieProduit : req.body.categorieProduit,         
+        isActive: true              
+      });                                                  
+      f.save();
+      res.send(f);
+      console.log("produit ajouté avec succes ");
+      console.log(f);       
+
+});
+
+//end 
+
 /* POST  product . */
-router.post('/addProduct',upload.single('image'),async(req,res)=>
+router.post('/addProduct/:id', upload.single('image'),async(req,res)=>
 {   
-    
-    console.log("req.body.image>>>>>>>>>>>>>"+req.file.filename);
+    //console.log("req.file>>>>>>>>>>>>"+req.file);       
+    //console.log("req.body.image>>>>>>>>>>>>>"+req.file.filename);
     //const { id } = req.params;
-    var id = req.headers['id']; 
+    var id = req.params['id']; 
     const categoryProduct = await CategoryProduct.findById(id);
     var f= new produit({
         nomProd: req.body.nomProd,			
-        prix: req.body.prix,		
+        prix: req.body.prix,		    
         image:req.file.filename,
-        description: req.body.description,	
+        description: req.body.description,	    
         quantiteProd: req.body.quantiteProd,
-        categorieProduit : categoryProduct,
-        isActive: req.body.isActive
+        //categorieProduit : categoryProduct,
+        categorieProduit : req.body.categorieProduit,  
+        isActive: true
       });
       //f.image= req.body.filename;
       //var f2= new produit({...req.body });
@@ -76,12 +110,12 @@ router.post('/addProduct',upload.single('image'),async(req,res)=>
       console.log("produit ajouté avec succes ");
       console.log(f);
 
-});
+});             
 /* POST  product . */
 router.post('/add/:id',async(req,res)=>
 {   console.log(">>>>>>>>>");
     console.log(req.body);
-    upload.single('image');
+    upload.single('image');             
     //verifyCategoryIdentity;
     //const categoryProduct = req.categorieProduit; 
     const { id } = req.params;
@@ -96,7 +130,8 @@ router.post('/add/:id',async(req,res)=>
     prix: req.body.prix,		
     description: req.body.description,	
     quantiteProd: req.body.quantiteProd,
-    categorieProduit : categoryProduct,
+    //categorieProduit : categoryProduct,
+    categorieProduit : req.body.categorieProduit,  
 	isActive: req.body.isActive
   });
   console.log("avant");
@@ -122,7 +157,7 @@ router.delete('/delete/:id', async(req, res) =>{
     const { id } = req.params;
     await produit.findByIdAndDelete(id);
     console.log({ id });
-    //res.redirect("/produit")
+    //res.redirect("/produit")              
     res.send("Suppression effectué avec succes")
 });
 ///////////////////////////////////////////////GENERATION QR CODE

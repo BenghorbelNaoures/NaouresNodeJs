@@ -2,18 +2,26 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var Localisation= new Schema({
+const Localisation= new Schema({
 
-    Lieu: String,		
-    lattitude: String,		
-    longitude: String,
-    isActive: Boolean,
+   
+    type:{
+        type: String,
+        default: "Point"
+    },
+
+    coordinates: {
+        type: [Number],
+        index: "2dsphere"
+    },
+
+    isActive:{
+        type: Boolean,
+        default: true,
+    },
     
-    programme: {
-            type: Schema.Types.ObjectId,
-            ref: "programme"
-    }
+  
 
 });
 
-module.exports = mongoose.model('localisation',Localisation);
+module.exports = Localisation;

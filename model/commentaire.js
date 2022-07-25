@@ -10,6 +10,7 @@ var Commentaire= new Schema({
     message: String,	
     isActive: Boolean,
     note : String, 
+    user:String,
 
     produit: {
 

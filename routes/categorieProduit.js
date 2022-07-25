@@ -22,7 +22,7 @@ router.post('/add',function(req,res)
   console.log(req.body);
   var f= new categorieProduit({
     libelle: req.body.libelle,		
-    isActive: req.body.isActive	
+    isActive: true
   });
   f.save();
   res.send(f)

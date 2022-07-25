@@ -11,11 +11,12 @@ var Produit= new Schema({
     description: String,	
     quantiteProd: Number,	
 	  isActive: Boolean,
-    categorieProduit: {
+    categorieProduit:String
+    //categorieProduit: {
 
-      type: mongoose.Types.ObjectId,
-      ref: "categorieProduit"  
-    }
+    // type: mongoose.Types.ObjectId,
+    //  ref: "categorieProduit"  
+    //}    */ 
 
 },
 {

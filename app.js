@@ -4,7 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors  = require('cors');
-
+//modif 24/07/2022
+const bodyParser =require('body-parser');
+//end
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://127.0.0.1:27017/HuntKingdom")
   .then(()=>console.log("database connected"))
@@ -14,6 +16,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var facture = require('./routes/facture');
 var produitRouter = require('./routes/produit');
+var programmeRouter = require('./routes/programmeRoute');
+
 var categoryProduitRouter = require('./routes/categorieProduit');
 var commentairesRouter = require('./routes/commentaires');
 
@@ -22,6 +26,11 @@ app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
+//modif pour 24/07/2022:
+app.use(bodyParser.json());
+app.use('/uploads', express.static(path.join('uploads')));
+//
 
 app.use(logger('dev'));
 app.use(express.json());
